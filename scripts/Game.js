@@ -1,21 +1,23 @@
 var game = new Game();
 
 function init() {
-    if (game.init()) {
-        game.start();
-    }
+    game.init();
 }
 
 function Game() {
-    this.init = function () {
+    this.init = function() {
+        // Get the canvas elements
         this.bgCanvas = document.getElementById('background');
         this.shipCanvas = document.getElementById('ship');
         this.mainCanvas = document.getElementById('main');
+
+        // Test to see if canvas is supported.
         if (this.bgCanvas.getContext) {
             this.bgContext = this.bgCanvas.getContext('2d');
             this.shipContext = this.shipCanvas.getContext('2d');
             this.mainContext = this.mainCanvas.getContext('2d');
 
+            // Initialize objects to contain their context and canvas information
             Background.prototype.context = this.bgContext;
             Background.prototype.canvasWidth = this.bgCanvas.width;
             Background.prototype.canvasHeight = this.bgCanvas.height;
@@ -32,64 +34,79 @@ function Game() {
             Enemy.prototype.canvasWidth = this.mainCanvas.width;
             Enemy.prototype.canvasHeight = this.mainCanvas.height;
 
+            // Initialize the background object
             this.background = new Background();
-            this.background.init(0, 0);
+            this.background.init(0,0); // Set draw point to 0,0
 
+            // Initialize the ship object
             this.ship = new Ship();
-            this.shipStartX = this.shipCanvas.width / 2 - images.spaceship.width;
-            this.shipStartY = this.shipCanvas.height / 4 * 3 + images.spaceship.height * 2;
-            this.ship.init(this.shipStartX, this.shipStartY, images.spaceship.width, images.spaceship.height);
+            // Set the ship to start near the bottom middle of the canvas
+            this.shipStartX = this.shipCanvas.width/2 - images.spaceship.width;
+            this.shipStartY = this.shipCanvas.height/4*3 + images.spaceship.height*2;
+            this.ship.init(this.shipStartX, this.shipStartY,images.spaceship.width, images.spaceship.height);
+
+            // Initialize the enemy pool object
             this.enemyPool = new Pool(30);
-            this.enemyPool.init('enemy');
+            this.enemyPool.init("enemy");
             this.spawnWave();
 
             this.enemyBulletPool = new Pool(50);
-            this.enemyBulletPool.init('enemyBullet');
+            this.enemyBulletPool.init("enemyBullet");
 
-            this.quadTree = new QuadTree({x: 0, y: 0, width: this.mainCanvas.width, height: this.mainCanvas.height});
+            // Start QuadTree
+            this.quadTree = new QuadTree({x:0,y:0,width:this.mainCanvas.width,height:this.mainCanvas.height});
 
-            return true;
-        }
-        else {
-            return false;
+            this.playerScore = 0;
+
+            // Audio files
+            this.laser = new SoundPool(10);
+            this.laser.init("laser");
+
+            this.explosion = new SoundPool(20);
+            this.explosion.init("explosion");
+
+            this.backgroundAudio = new Audio("sounds/kick_shock.wav");
+            this.backgroundAudio.loop = true;
+            this.backgroundAudio.volume = .25;
+            this.backgroundAudio.load();
+
+            this.gameOverAudio = new Audio("sounds/game_over.wav");
+            this.gameOverAudio.loop = true;
+            this.gameOverAudio.volume = .25;
+            this.gameOverAudio.load();
+
+            this.checkAudio = window.setInterval(function(){checkReadyState()},1000);
         }
     };
 
-    this.spawnWave = function () {
-        this.background.speed+=1;
+    // Spawn a new wave of enemies
+    this.spawnWave = function() {
         var height = images.enemy.height;
         var width = images.enemy.width;
         var x = 100;
         var y = -height;
         var spacer = y * 1.5;
         for (var i = 1; i <= 18; i++) {
-            this.enemyPool.get(x, y, 2);
+            this.enemyPool.get(x,y,2);
             x += width + 25;
             if (i % 6 == 0) {
                 x = 100;
                 y += spacer
             }
         }
-    }
+    };
 
-    this.playerScore = 0;
-
-    this.start = function () {
+    // Start the animation loop
+    this.start = function() {
         this.ship.draw();
-        this.ship.alive = true;
+        this.backgroundAudio.play();
         animate();
     };
-    this.gameOver = function () {
-        //this.backgroundAudio.pause();
-        //this.gameOverAudio.currentTime = 0;
-        //this.gameOverAudio.play();
-        document.getElementById('game-over').style.display = "block";
-    };
-// Restart the game
-    this.restart = function () {
-        //this.gameOverAudio.pause();
-        this.lives=3;
-        this.ship.isColliding = false;
+
+    // Restart the game
+    this.restart = function() {
+        this.gameOverAudio.pause();
+
         document.getElementById('game-over').style.display = "none";
         this.bgContext.clearRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
         this.shipContext.clearRect(0, 0, this.shipCanvas.width, this.shipCanvas.height);
@@ -97,9 +114,8 @@ function Game() {
 
         this.quadTree.clear();
 
-        this.background.init(0, 0);
-        this.ship.init(this.shipStartX, this.shipStartY,
-            images.spaceship.width, images.spaceship.height);
+        this.background.init(0,0);
+        this.ship.init(this.shipStartX, this.shipStartY,images.spaceship.width, images.spaceship.height);
 
         this.enemyPool.init("enemy");
         this.spawnWave();
@@ -107,28 +123,51 @@ function Game() {
 
         this.playerScore = 0;
 
-        //this.backgroundAudio.currentTime = 0;
-        //this.backgroundAudio.play();
+        this.backgroundAudio.currentTime = 0;
+        this.backgroundAudio.play();
 
         this.start();
     };
+
+    // Game over
+    this.gameOver = function() {
+        this.backgroundAudio.pause();
+        this.gameOverAudio.currentTime = 0;
+        this.gameOverAudio.play();
+        document.getElementById('game-over').style.display = "block";
+    };
+}
+
+// Ensure the game sound has loaded before starting the game
+function checkReadyState() {
+    if (game.gameOverAudio.readyState === 4 && game.backgroundAudio.readyState === 4) {
+        window.clearInterval(game.checkAudio);
+        document.getElementById('loading').style.display = "none";
+        game.start();
+    }
 }
 
 function animate() {
     document.getElementById('score').innerHTML = game.playerScore;
+
+    // Insert objects into quadtree
     game.quadTree.clear();
     game.quadTree.insert(game.ship);
     game.quadTree.insert(game.ship.bulletPool.getPool());
     game.quadTree.insert(game.enemyPool.getPool());
     game.quadTree.insert(game.enemyBulletPool.getPool());
+
     detectCollision();
 
+    // No more enemies
     if (game.enemyPool.getPool().length === 0) {
         game.spawnWave();
     }
 
+    // Animate game objects
     if (game.ship.alive) {
-        requestAnimFrame(animate);
+        requestAnimFrame( animate );
+
         game.background.draw();
         game.ship.move();
         game.ship.bulletPool.animate();
@@ -136,4 +175,3 @@ function animate() {
         game.enemyBulletPool.animate();
     }
 }
-

@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Space Invaders</title>
+<head>
+    <title>Space Shooter Demo</title>
     <style>
         canvas {
             position: absolute;
@@ -10,15 +9,12 @@
             left: 0;
             background: transparent;
         }
-
         #background {
             z-index: 0;
         }
-
         #main {
             z-index: 1;
         }
-
         #ship {
             z-index: 2;
         }
@@ -31,6 +27,7 @@
             cursor: default;
         }
         .game-over {
+            z-index: 3;
             position: absolute;
             top: 100px;
             left: 210px;
@@ -39,7 +36,6 @@
             font-size: 30px;
             cursor: default;
             display: none;
-            z-index: 2;
         }
         .game-over span {
             font-size: 20px;
@@ -50,29 +46,40 @@
         .game-over span:hover {
             color: #FFD700;
         }
-        #lives {
-            left: 0;
+        .loading {
             position: absolute;
-            top: 340px;
-            width: 48px;
-            height: 16px;
+            top: 100px;
+            left: 210px;
+            color: #FF7F00;
+            font-family: Helvetica, sans-serif;
+            font-size: 30px;
+            cursor: default;
         }
     </style>
 </head>
 <body>
-<canvas id="background" width="600" height="360"></canvas>
-<canvas id="main" width="600" height="360"></canvas>
-<canvas id="ship" width="600" height="360"></canvas>
-<div id="lives"></div>
+<!-- The canvas for the panning background -->
+<canvas id="background" width="600" height="360">
+    Your browser does not support canvas. Please try again with a different browser.
+</canvas>
+<!-- The canvas for all enemy ships and bullets -->
+<canvas id="main" width="600" height="360">
+</canvas>
+<!-- The canvas the ship uses (can only move up
+ one forth the screen. -->
+<canvas id="ship" width="600" height="360">
+</canvas>
+<div class="score">SCORE: <span id="score"></span></div>
+<div class="game-over" id="game-over">GAME OVER<p><span onclick="game.restart()">Restart</span></p></div>
+<div class="loading" id="loading">LOADING...<p>Please wait</p></div>
 <script src="scripts/Images.js"></script>
-<script src="scripts/Background.js"></script>
 <script src="scripts/Game.js"></script>
-<script src="scripts/EventHandler.js"></script>
+<script src="scripts/Background.js"></script>
 <script src="scripts/Player.js"></script>
 <script src="scripts/Enemy.js"></script>
 <script src="scripts/Bullet.js"></script>
 <script src="scripts/Collision.js"></script>
-<div class="score">SCORE: <span id="score"></span></div>
-<div class="game-over" id="game-over">GAME OVER<p><span onclick="game.restart()">Restart</span></p></div>
+<script src="scripts/EventHandler.js"></script>
+<script src="scripts/Sounds.js/"></script>
 </body>
 </html>
