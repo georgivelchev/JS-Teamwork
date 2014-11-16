@@ -16,6 +16,7 @@ function Ship() {
         this.alive = true;
         this.isColliding = false;
         this.bulletPool.init("bullet");
+        document.getElementById('lives').src="images/lives_three.png";
     };
 
     this.draw = function() {
@@ -57,6 +58,14 @@ function Ship() {
         }
         else {
             this.lives--;
+            if (this.lives==2) {
+                document.getElementById('lives').src="images/lives_two.png";
+            } else if (this.lives==1) {
+                document.getElementById('lives').src="images/live.png";
+            }
+            else {
+                document.getElementById('lives').src="";
+            }
             this.isColliding=false;
             if (this.lives<=0) {
                 this.alive = false;

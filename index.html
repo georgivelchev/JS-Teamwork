@@ -55,6 +55,15 @@
             font-size: 30px;
             cursor: default;
         }
+        .lives {
+            vertical-align: top;
+            height: 16px;
+            position: fixed;
+            left: 0;
+            color: #FF7F00;
+            font-family: Helvetica, sans-serif;
+            cursor: default;
+        }
     </style>
 </head>
 <body>
@@ -72,6 +81,7 @@
 <div class="score">SCORE: <span id="score"></span></div>
 <div class="game-over" id="game-over">GAME OVER<p><span onclick="game.restart()">Restart</span></p></div>
 <div class="loading" id="loading">LOADING...<p>Please wait</p></div>
+<div class="lives">LIVES: <img id="lives"></div>
 <script src="scripts/Images.js"></script>
 <script src="scripts/Game.js"></script>
 <script src="scripts/Background.js"></script>
