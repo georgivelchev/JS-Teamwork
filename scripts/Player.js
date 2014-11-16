@@ -1,5 +1,6 @@
 function Ship() {
     this.speed = 3;
+    this.lives = 3;
     this.bulletPool = new Pool(30);
     var fireRate = 15;
     var counter = 0;
@@ -30,8 +31,7 @@ function Ship() {
             this.context.clearRect(this.x, this.y, this.width, this.height);
 
             // Update x and y according to the direction to move and
-            // redraw the ship. Change the else if's to if statements
-            // to have diagonal movement.
+            // redraw the ship.
             if (KEY_STATUS.left) {
                 this.x -= this.speed;
                 if (this.x <= 0) // Kep player within the screen
@@ -56,8 +56,12 @@ function Ship() {
             this.draw();
         }
         else {
-            this.alive = false;
-            game.gameOver();
+            this.lives--;
+            this.isColliding=false;
+            if (this.lives<=0) {
+                this.alive = false;
+                game.gameOver();
+            }
         }
 
         if (KEY_STATUS.space && counter >= fireRate && !this.isColliding) {

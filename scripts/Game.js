@@ -81,6 +81,7 @@ function Game() {
 
     // Spawn a new wave of enemies
     this.spawnWave = function() {
+        this.background.speed+=1;
         var height = images.enemy.height;
         var width = images.enemy.width;
         var x = 100;
@@ -105,6 +106,7 @@ function Game() {
 
     // Restart the game
     this.restart = function() {
+        this.ship.lives =3;
         this.gameOverAudio.pause();
 
         document.getElementById('game-over').style.display = "none";

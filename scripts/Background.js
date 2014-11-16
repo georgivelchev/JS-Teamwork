@@ -1,5 +1,5 @@
 function Background() {
-    this.speed = 1; // Define speed of the background for panning
+    this.speed = 0; // Define speed of the background for panning
 
     // Implement abstract function
     this.draw = function() {
