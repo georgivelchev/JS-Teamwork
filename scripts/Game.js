@@ -106,6 +106,7 @@ function Game() {
 
     // Restart the game
     this.restart = function() {
+        this.background.speed=0;
         this.ship.lives =3;
         this.gameOverAudio.pause();
 
