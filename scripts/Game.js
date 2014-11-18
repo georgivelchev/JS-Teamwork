@@ -131,6 +131,8 @@ function Game() {
         this.start();
     };
 
+
+
     // Game over
     this.gameOver = function() {
         this.backgroundAudio.pause();
