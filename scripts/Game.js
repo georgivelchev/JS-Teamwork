@@ -42,7 +42,7 @@ function Game() {
             this.ship = new Ship();
             // Set the ship to start near the bottom middle of the canvas
             this.shipStartX = this.shipCanvas.width/2 - images.spaceship.width;
-            this.shipStartY = this.shipCanvas.height/4*3 + images.spaceship.height*2;
+            this.shipStartY = this.shipCanvas.height/4*3 + images.spaceship.height;
             this.ship.init(this.shipStartX, this.shipStartY,images.spaceship.width, images.spaceship.height);
 
             // Initialize the enemy pool object

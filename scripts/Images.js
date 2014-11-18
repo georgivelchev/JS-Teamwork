@@ -38,10 +38,10 @@ var images = new function() {
 
     // Set images src
     this.background.src = "images/background.png";
-    this.spaceship.src = "images/ship.png";
-    this.bullet.src = "images/bullet.png";
-    this.enemy.src = "images/enemy.png";
-    this.enemyBullet.src = "images/bullet_enemy.png";
+    this.spaceship.src = "images/ship1.png";
+    this.bullet.src = "images/bullet_my.png";
+    this.enemy.src = "images/enemy1.png";
+    this.enemyBullet.src = "images/enemebullet.png";
     this.live.src = "images/live.png";
 };
 

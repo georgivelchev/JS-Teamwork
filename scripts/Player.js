@@ -81,7 +81,7 @@ function Ship() {
 
     //Fires two bullets
     this.fire = function() {
-        this.bulletPool.getTwo(this.x+6, this.y, 3,this.x+33, this.y, 3);
+        this.bulletPool.getTwo(this.x+3, this.y, 3,this.x+28, this.y, 3);
         game.laser.get();
     };
 }
